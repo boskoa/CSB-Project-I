@@ -1,5 +1,5 @@
 """
-URL configuration for pollsite project.
+URL configuration for notesite project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -15,11 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.urls import path, include
-from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
-    path("polls/", include("polls.urls")),
-    path("admin/", admin.site.urls),
-] + debug_toolbar_urls()
+    path("", include("notes.urls", namespace="notes")),
+]
