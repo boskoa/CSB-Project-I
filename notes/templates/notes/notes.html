@@ -1,0 +1,19 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'notes/style.css' %}">
+
+<header>
+  <h2>Notes</h2>
+  <button id="logout">Log out</button>
+</header>
+<main>
+  <div>HAI MARK</div>
+  <form action="" method="post">
+    <textarea type="text" name="text" id="text"></textarea>
+    <button type="subit">create</button>
+  </form>
+  <ul>
+    {% for note in notes %}
+    <ul>{{ note.text }}</ul>
+    {% endfor %}
+  </ul>
+</main>

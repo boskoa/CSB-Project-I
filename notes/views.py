@@ -2,10 +2,26 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from .models import Note
+from .models import User
+
+
+def requires_auth(view_func):
+    def wrapper(request, *args, **kwargs):
+        auth_token = request.COOKIES.get("auth_token")
+        if not auth_token:
+            return redirect("/login_page/")
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 
 def home(request):
-    return HttpResponse("Hello, World!")
+    auth_token = request.COOKIES.get("auth_token")
+    if auth_token:
+        return redirect("/notes/")
+    else:
+        return HttpResponse("HAI NOTES")
 
 
 def login_user(request):
@@ -27,22 +43,51 @@ def login_user(request):
     return render(request, "notes/login_page.html")
 
 
+def register_user(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        if not username or not email or not password:
+            return render(
+                request,
+                "notes/register_page.html",
+                {"error": "All fields are required"},
+            )
+
+        if User.objects.filter(username=username).exists():
+            return render(
+                request,
+                "notes/register_page.html",
+                {"error": "Username already exists"},
+            )
+
+        if User.objects.filter(email=email).exists():
+            return render(
+                request, "notes/register_page.html", {"error": "Email already exists"}
+            )
+
+        User.objects.create_user(username, email, password)
+        return redirect("/login_page/")
+    return render(request, "notes/register_page.html")
+
+
 def logout_user(request):
     response = JsonResponse({"message": "Logged out"})
     response.delete_cookie("auth_token")
     return response
 
 
-def protected(request):
-    auth_token = request.COOKIES.get("auth_token")
-    if auth_token:
-        return redirect("/protected/notes/")
-    return redirect("/login/")
-
-
+@requires_auth
 def notes(request):
-    return HttpResponse("Hello, Notes!")
+    notes = Note.objects.all().order_by("-created_at")
+    return render(request, "notes/notes.html", {"notes": notes})
 
 
 def login_page(request):
     return render(request, "notes/login_page.html")
+
+
+def register_page(request):
+    return render(request, "notes/register_page.html")

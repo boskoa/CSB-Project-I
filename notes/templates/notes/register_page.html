@@ -1,15 +1,19 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'notes/style.css' %}">
 
-<form action="{% url 'notes:login_user' %}" method="post">
+<form action="{% url 'notes:register_user' %}" method="post">
   <label>
     Username:
     <input type="text" id="username" name="username" />
   </label>
   <label>
+    Email:
+    <input type="email" id="email" name="email" />
+  </label>
+  <label>
     Password:
     <input type="password" id="password" name="password" />
   </label>
-  <button type="submit">Log in</button>
-  <a href="/register_page/">Not registered</a>
+  <button type="submit">Register</button>
+  <a href="/login_page/">Already registered</a>
 </form>
