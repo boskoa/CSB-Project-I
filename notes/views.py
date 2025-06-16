@@ -9,8 +9,6 @@ def home(request):
 
 
 def login_user(request):
-    print("FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -18,7 +16,7 @@ def login_user(request):
 
         if user:
             login(request, user)
-            response = redirect(reverse("notes:login_user"))
+            response = redirect(reverse("notes:home"))
             response.set_cookie("auth_token", user.password, httponly=True, secure=True)
             return response
         else:
