@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -92,3 +92,34 @@ def login_page(request):
 
 def register_page(request):
     return render(request, "notes/register_page.html")
+
+
+@requires_auth
+def create_note(request):
+    if request.method == "POST":
+        text = request.POST.get("text")
+
+        if not text:
+            return JsonResponse({"error": "Note text is required"}, status=400)
+
+        Note.objects.create(text=text, user=request.user)
+        return HttpResponseRedirect(reverse("notes:notes"))
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@requires_auth
+def delete_note(request, note_id):
+    if request.method == "POST":
+        try:
+            note = Note.objects.get(id=note_id)
+            if note.user == request.user:
+                note.delete()
+                return HttpResponseRedirect(reverse("notes:notes"))
+            else:
+                return JsonResponse(
+                    {"error": "You do not have permission to delete this note"},
+                    status=403,
+                )
+        except Note.DoesNotExist:
+            return JsonResponse({"error": "Note not found"}, status=404)
+    return JsonResponse({"error": "Invalid request method"}, status=405)

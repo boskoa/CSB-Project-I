@@ -1,3 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'notes/style.css' %}">
+
 <h3>Welcome to the notes app</h3>
-<a href="/login_page/">Log in</a>
-<a href="/register_page/">Register</a>
+<nav>
+  <a class="link" href="/login_page/">Log in</a>
+  <a class="link" href="/register_page/">Register</a>
+</nav>

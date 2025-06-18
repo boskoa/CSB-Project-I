@@ -6,14 +6,23 @@
   <form id="logout" action="{% url 'notes:logout_user' %}"><button type="submit">Log out</button></form>
 </header>
 <main>
-  <div>HAI MARK</div>
-  <form action="" method="post">
+  <h4 class="new-note">Create new note</h4>
+  <form id="note-form" class="new-note" action="{% url 'notes:create_note' %}" method="post">
     <textarea type="text" name="text" id="text"></textarea>
-    <button type="subit">create</button>
+    <button class="log-reg-button" type="subit">Add</button>
   </form>
-  <ul>
+  <ul id="notes">
+    <h4>Your notes:</h4>
     {% for note in notes %}
-    <ul>{{ note.text }}</ul>
+    <li id="{{ note.id }}">
+      <div>
+        <p class="note-date">{{ note.created_at }}</p>
+        <p>{{ note.text }}</p>
+      </div>
+      <form class="delete-note-button" action="{% url 'notes:delete_note' note.id %}" method="post">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
     {% endfor %}
   </ul>
 </main>
