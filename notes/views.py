@@ -1,5 +1,5 @@
-from django.http import HttpResponse, JsonResponse
-from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from .models import Note
@@ -21,7 +21,7 @@ def home(request):
     if auth_token:
         return redirect("/notes/")
     else:
-        return HttpResponse("HAI NOTES")
+        return render(request, "notes/home.html")
 
 
 def login_user(request):
@@ -74,7 +74,8 @@ def register_user(request):
 
 
 def logout_user(request):
-    response = JsonResponse({"message": "Logged out"})
+    logout(request)
+    response = HttpResponseRedirect(reverse("notes:home"))
     response.delete_cookie("auth_token")
     return response
 
